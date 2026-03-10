@@ -1,110 +1,45 @@
-🧪 Lupo Química - Sistema de Gestão de Produtos
+# 🧪 Lupo Química - Sistema de Gestão Industrial
 
-Este é um sistema Full Stack desenvolvido para a empresa Lupo Química Industrial. O projeto consiste em uma vitrine de produtos para clientes e um painel administrativo seguro para gerenciamento de estoque e categorias.
+O projeto **Lupo Química** é uma aplicação Full Stack robusta desenvolvida para gerenciar uma vitrine de produtos químicos e industriais. O sistema conta com uma interface pública para clientes e uma área administrativa restrita e segura.
 
+---
 
+## 🚀 Funcionalidades Principais
 
-🚀 Funcionalidades
+### 🌐 Área do Cliente (Vitrine)
+* **Vitrine Dinâmica:** Listagem de produtos filtrados por categorias.
+* **Detalhes Técnicos:** Visualização de princípios ativos e especificações.
+* **Conversão via WhatsApp:** Botão de orçamento integrado que já preenche a mensagem para o vendedor.
 
-🌐 Área Pública (Vitrine)
+### 🔐 Painel Administrativo (Exclusivo)
+* **Segurança JWT:** Proteção de rotas com autenticação por Token.
+* **Gestão de Inventário:** CRUD completo (Criar, Ler, Atualizar e Excluir) de produtos.
+* **Categorias Dinâmicas:** Gerenciamento de categorias em tempo real para expansão do catálogo.
 
-Visualização de Produtos: Listagem dinâmica de produtos químicos e industriais.
+---
 
+## 🛠️ Stack Tecnológica
 
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Front-end** | Blazor WebAssembly (.NET 10) |
+| **Back-end** | ASP.NET Core Web API |
+| **Banco de Dados** | SQL Server com Entity Framework Core |
+| **Segurança** | Autenticação JWT (JSON Web Tokens) |
+| **UI/UX** | Bootstrap 5 & Blazored LocalStorage |
 
-Detalhes do Produto: Informações técnicas e princípios ativos.
+---
 
+## 📦 Como Instalar e Rodar
 
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/SEU_USUARIO/LupoQuimica.git](https://github.com/SEU_USUARIO/LupoQuimica.git)
 
-Integração WhatsApp: Botão de orçamento direto que já envia o nome do produto no texto.
+2. **Configure o Banco:**
 
+    No appsettings.json, insira sua ConnectionString.
 
-
-🔐 Área Administrativa (Painel de Controle)
-
-Autenticação JWT: Sistema de login seguro com Tokens.
-
-
-
-Gestão de Produtos (CRUD): Interface para criar, editar, listar e excluir produtos.
-
-
-
-Gestão de Categorias: Sistema dinâmico para cadastrar novas categorias no banco de dados.
-
-
-
-Modais Interativos: Formulários que não recarregam a página, proporcionando uma UX moderna.
-
-
-
-🛠️ Tecnologias Utilizadas
-
-Front-end
-
-Blazor WebAssembly (.NET 10)
-
-
-
-Bootstrap 5: Estilização e componentes responsivos.
-
-
-
-Blazored LocalStorage: Para persistência do token de autenticação.
-
-
-
-Bootstrap Icons: Biblioteca de ícones.
-
-
-
-Back-end (API)
-
-ASP.NET Core Web API
-
-
-
-Entity Framework Core: ORM para comunicação com o banco de dados.
-
-
-
-SQL Server: Armazenamento de dados.
-
-
-
-JWT (JSON Web Tokens): Segurança e autorização de rotas.
-
-
-
-📦 Como rodar o projeto
-
-Clonar o repositório:
-
-
-
-Bash
-
-git clone https://github.com/SEU\_USUARIO/LupoQuimica.git
-
-Configurar o Banco de Dados:
-
-
-
-No arquivo appsettings.json da API, ajuste a sua DefaultConnection.
-
-
-
-Rode as migrations no Console do Gerenciador de Pacotes:
-
-
-
-PowerShell
-
-Update-Database
-
-Executar:
-
-
-
-Inicie o projeto da API e o projeto Client simultaneamente pelo Visual Studio.
-
+4. **Aplique as Migrations:**
+   ```bash
+   Update-Database
