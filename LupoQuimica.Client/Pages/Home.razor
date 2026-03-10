@@ -1,0 +1,46 @@
+﻿@page "/"
+@using LupoQuimica.Shared
+@inject HttpClient Http
+
+<div class="container mt-4">
+
+    @if (produtos == null)
+    {
+        <div class="text-center"><div class="spinner-border text-success"></div></div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var produto in produtos)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0" style="border-radius: 15px;">
+                        <img src="@produto.ImagemUrl" class="card-img-top p-3" style="height: 200px; object-fit: contain;">
+                        <div class="card-body">
+                            <span class="badge bg-success bg-opacity-10 text-success mb-2">
+                                @ObterNomeCategoria(produto.CategoriaId)
+                            </span>
+                            <h5 class="card-title fw-bold">@produto.Nome</h5>
+                            <p class="card-text text-muted small">Ativo: @produto.PrincipioAtivo</p>
+                            <a href="detalhes/@produto.Id" class="btn btn-outline-success w-100 rounded-pill">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Produto> produtos;
+    private List<Categoria> categorias = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await Http.GetFromJsonAsync<List<Produto>>("api/produtos");
+        categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/categorias");
+    }
+
+    private string ObterNomeCategoria(int id)
+        => categorias.FirstOrDefault(c => c.Id == id)?.Nome ?? "Geral";
+}

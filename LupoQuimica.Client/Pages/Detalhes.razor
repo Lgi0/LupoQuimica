@@ -1,0 +1,51 @@
+﻿@page "/detalhes/{Id:int}"
+@using LupoQuimica.Shared
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+@if (produto == null)
+{
+    <p class="text-center mt-5">Carregando detalhes...</p>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="row bg-white p-4 shadow-sm" style="border-radius: 20px;">
+            <div class="col-md-5 text-center">
+                <img src="@produto.ImagemUrl" class="img-fluid" style="max-height: 400px;">
+            </div>
+            <div class="col-md-7">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Vitrine</a></li>
+                        <li class="breadcrumb-item active">@ObterNomeCategoria(produto.CategoriaId)</li>
+                    </ol>
+                </nav>
+                <h1 class="fw-bold mb-3">@produto.Nome</h1>
+                <p class="text-muted mb-4"><strong>Princípio Ativo:</strong> @produto.PrincipioAtivo</p>
+                <hr>
+                <div class="d-grid mt-4">
+                    <a href="https://wa.me/5511999999999?text=Olá! Gostaria de um orçamento para @produto.Nome"
+                       target="_blank" class="btn btn-success btn-lg rounded-pill p-3 fw-bold">
+                        <i class="bi bi-whatsapp me-2"></i> Solicitar Orçamento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Produto produto;
+    private List<Categoria> categorias = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        produto = await Http.GetFromJsonAsync<Produto>($"api/produtos/{Id}");
+        categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/categorias");
+    }
+
+    private string ObterNomeCategoria(int id)
+        => categorias.FirstOrDefault(c => c.Id == id)?.Nome ?? "Geral";
+}

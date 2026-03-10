@@ -1,0 +1,217 @@
+﻿@page "/admin"
+@using LupoQuimica.Shared
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #11533a;">Painel Administrativo</h2>
+        <div>
+            <button class="btn btn-outline-success me-2 shadow-sm" @onclick="AbrirModalCategorias">
+                <i class="bi bi-tags me-1"></i> Categorias
+            </button>
+            <button class="btn btn-success shadow-sm" @onclick="AbrirModalCadastro">
+                <i class="bi bi-plus-lg me-1"></i> Novo Produto
+            </button>
+        </div>
+    </div>
+
+    @if (produtos == null)
+    {
+        <div class="text-center p-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2 text-muted">Sincronizando dados...</p>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Produto</th>
+                            <th>Categoria</th>
+                            <th>Princípio Ativo</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in produtos)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@p.Nome</td>
+                                <td>
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        @(categorias.FirstOrDefault(c => c.Id == p.CategoriaId)?.Nome ?? "Sem Categoria")
+                                    </span>
+                                </td>
+                                <td class="text-muted small">@p.PrincipioAtivo</td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light text-primary me-2" @onclick="() => EditarProduto(p)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light text-danger" @onclick="() => ExcluirProduto(p.Id)">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@* --- MODAL DE PRODUTO --- *@
+@if (mostrarModalProduto)
+{
+    <div class="modal fade show d-block" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h5 class="fw-bold">@(produtoEmEdicao.Id == 0 ? "Cadastrar Produto" : "Editar Produto")</h5>
+                    <button type="button" class="btn-close" @onclick="() => mostrarModalProduto = false"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nome Comercial</label>
+                        <input @bind="produtoEmEdicao.Nome" class="form-control rounded-3" placeholder="Ex: Hipoclorito de Sódio" />
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Categoria</label>
+                            <select @bind="produtoEmEdicao.CategoriaId" class="form-select rounded-3">
+                                <option value="0">Selecione...</option>
+                                @foreach (var cat in categorias)
+                                {
+                                    <option value="@cat.Id">@cat.Nome</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">Princípio Ativo</label>
+                            <input @bind="produtoEmEdicao.PrincipioAtivo" class="form-control rounded-3" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">URL da Imagem</label>
+                        <input @bind="produtoEmEdicao.ImagemUrl" class="form-control rounded-3" placeholder="https://..." />
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button class="btn btn-light rounded-pill px-4" @onclick="() => mostrarModalProduto = false">Cancelar</button>
+                    <button class="btn btn-success rounded-pill px-4 fw-bold" @onclick="SalvarProduto">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@* --- MODAL DE CATEGORIAS --- *@
+@if (mostrarModalCategorias)
+{
+    <div class="modal fade show d-block" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h6 class="fw-bold text-uppercase text-muted" style="letter-spacing: 1px;">Categorias</h6>
+                    <button type="button" class="btn-close" @onclick="() => mostrarModalCategorias = false"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="input-group mb-3">
+                        <input @bind="novaCategoriaNome" class="form-control form-control-sm" placeholder="Nova Categoria..." />
+                        <button class="btn btn-success btn-sm" @onclick="SalvarCategoria"><i class="bi bi-check-lg"></i></button>
+                    </div>
+                    <ul class="list-group list-group-flush small">
+                        @foreach (var cat in categorias)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                @cat.Nome
+                                <button class="btn btn-link text-danger p-0" @onclick="() => ExcluirCategoria(cat.Id)"><i class="bi bi-x-circle"></i></button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Produto> produtos;
+    private List<Categoria> categorias = new();
+    private Produto produtoEmEdicao = new();
+    private string novaCategoriaNome = "";
+    private bool mostrarModalProduto = false;
+    private bool mostrarModalCategorias = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await LocalStorage.GetItemAsync<string>("authToken");
+        if (string.IsNullOrEmpty(token)) Nav.NavigateTo("/login");
+
+        await CarregarDados();
+    }
+
+    private async Task CarregarDados()
+    {
+        produtos = await Http.GetFromJsonAsync<List<Produto>>("api/produtos");
+        categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/categorias");
+    }
+
+    private void AbrirModalCadastro()
+    {
+        produtoEmEdicao = new Produto();
+        mostrarModalProduto = true;
+    }
+
+    private void EditarProduto(Produto p)
+    {
+        produtoEmEdicao = new Produto { Id = p.Id, Nome = p.Nome, CategoriaId = p.CategoriaId, PrincipioAtivo = p.PrincipioAtivo, ImagemUrl = p.ImagemUrl };
+        mostrarModalProduto = true;
+    }
+
+    private async Task SalvarProduto()
+    {
+        await AdicionarToken();
+        HttpResponseMessage resp;
+
+        if (produtoEmEdicao.Id == 0) resp = await Http.PostAsJsonAsync("api/produtos", produtoEmEdicao);
+        else resp = await Http.PutAsJsonAsync($"api/produtos/{produtoEmEdicao.Id}", produtoEmEdicao);
+
+        if (resp.IsSuccessStatusCode) { await CarregarDados(); mostrarModalProduto = false; }
+    }
+
+    private async Task ExcluirProduto(int id)
+    {
+        await AdicionarToken();
+        var resp = await Http.DeleteAsync($"api/produtos/{id}");
+        if (resp.IsSuccessStatusCode) await CarregarDados();
+    }
+
+    private void AbrirModalCategorias() => mostrarModalCategorias = true;
+
+    private async Task SalvarCategoria()
+    {
+        if (string.IsNullOrWhiteSpace(novaCategoriaNome)) return;
+        await AdicionarToken();
+        var resp = await Http.PostAsJsonAsync("api/categorias", new Categoria { Nome = novaCategoriaNome });
+        if (resp.IsSuccessStatusCode) { novaCategoriaNome = ""; await CarregarDados(); }
+    }
+
+    private async Task ExcluirCategoria(int id)
+    {
+        await AdicionarToken();
+        var resp = await Http.DeleteAsync($"api/categorias/{id}");
+        if (resp.IsSuccessStatusCode) await CarregarDados();
+    }
+
+    private async Task AdicionarToken()
+    {
+        var token = await LocalStorage.GetItemAsync<string>("authToken");
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+    }
+}
