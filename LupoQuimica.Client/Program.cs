@@ -7,7 +7,10 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Verifique se esta linha aponta para a porta correta da sua API
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7212/") });
+var apiUri = builder.HostEnvironment.IsDevelopment()
+    ? "https://localhost:7212"
+    : "https://lupo-quimica-production.up.railway.app/";
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUri) });
 builder.Services.AddBlazoredLocalStorage();
 await builder.Build().RunAsync();
