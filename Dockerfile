@@ -14,7 +14,7 @@ RUN dotnet restore "LupoQuimica.Api/LupoQuimica.Api.csproj"
 # (O .NET vai notar a referência e publicar o Client junto)
 COPY . .
 WORKDIR "/src/LupoQuimica.Api"
-RUN dotnet publish "LupoQuimica.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "LupoQuimica.Api/LupoQuimica.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # 2. Estágio Final
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y libgssapi-krb5-2 && rm -rf /var/lib/apt
 
 # Copia tudo o que foi publicado
 COPY --from=build /app/publish .
+# Forçamos a verificação da pasta wwwroot
+RUN ls -la ./wwwroot
 
 # Garante permissão total na pasta de arquivos estáticos
 RUN chmod -R 755 wwwroot

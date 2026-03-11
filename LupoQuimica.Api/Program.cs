@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Builder; // Adicione se não tiver
+using Microsoft.AspNetCore.Hosting; // Adicione se não tiver
 // Versao do Deploy: 2.0
 var builder = WebApplication.CreateBuilder(args);
 
