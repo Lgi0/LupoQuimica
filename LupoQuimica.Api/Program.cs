@@ -6,27 +6,27 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// String de Conexão para SQL Server Local (LocalDB)
-// O banco será criado automaticamente com o nome LupoQuimicaDB
-var connectionString = "Host=postgres.railway.internal;Port=5432;Database=railway;Username=postgres;Password=pZmUPChWtJOCXmigsMPJSfFGfVkRiugx";
+// Tenta pegar a conexão da variável do Railway, se não tiver, usa a fixa (fallback)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? "Host=postgres.railway.internal;Port=5432;Database=railway;Username=postgres;Password=pZmUPChWtJOCXmigsMPJSfFGfVkRiugx";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString)); // Mudamos para Postgre
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddControllers();
-
-// No .NET 10, o Swagger básico é ativado assim:
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuração de CORS para o Blazor
 builder.Services.AddCors(options => {
     options.AddPolicy("LupoPolicy", policy =>
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
+// Proteção para não quebrar se a chave JWT não estiver configurada
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "Chave_Mestra_Temporaria_De_32_Caracteres_!";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "LupoQuimica";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "LupoQuimica";
 
-var jwtKey = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -36,31 +36,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
 var app = builder.Build();
 
+// Migração automática (O "coração" do deploy)
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.Migrate(); // Isso cria as tabelas no Railway automaticamente
+    context.Database.Migrate();
 }
 
-// Ativa a interface visual do Swagger para você testar a API no navegador
-if (app.Environment.IsDevelopment())
-{
-    
-}
-
+// Swagger fora do IF para podermos ver no Railway
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors("LupoPolicy");
-app.UseAuthentication(); // <-- Quem é você?
-app.UseAuthorization();  // <-- O que você pode fazer?
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
