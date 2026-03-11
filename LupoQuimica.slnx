@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="LupoQuimica.Api/LupoQuimica.Api.csproj" />
-  <Project Path="LupoQuimica.Client/LupoQuimica.Client.csproj" />
-  <Project Path="LupoQuimica.Shared/LupoQuimica.Shared.csproj" />
-</Solution>
