@@ -62,7 +62,9 @@ app.UseSwaggerUI();
 
 //app.UseBlazorFrameworkFiles(); // Essencial para Blazor WASM
 app.UseDefaultFiles();
-app.UseStaticFiles();
+app.MapStaticAssets();
+
+
 
 app.UseCors("LupoPolicy");
 app.UseAuthentication();
