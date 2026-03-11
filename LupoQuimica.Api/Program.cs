@@ -8,10 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // String de Conexão para SQL Server Local (LocalDB)
 // O banco será criado automaticamente com o nome LupoQuimicaDB
-var connectionString = "Server=bppc490\\SQLEXPRESS;Database=LupoQuimicaDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+var connectionString = "Server=switchback.proxy.rlwy.net,23800;Database=LupoQuimicaDb;User Id=sa;Password=SUA_SENHA_AQUI;TrustServerCertificate=True";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString)); // Mudamos para UseSqlServer
+    options.UseNpgsql(connectionString)); // Mudamos para Postgre
 
 builder.Services.AddControllers();
 
