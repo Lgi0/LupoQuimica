@@ -25,4 +25,21 @@ COPY --from=publish /app/publish .
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
+# Etapa de publicação da API
+FROM build AS publish
+RUN dotnet publish "LupoQuimica.Api/LupoQuimica.Api.csproj" -c Release -o /app/publish
+
+# Etapa de publicação do Client (O QUE PODE ESTAR FALTANDO)
+FROM build AS publish-client
+RUN dotnet publish "LupoQuimica.Client/LupoQuimica.Client.csproj" -c Release -o /app/publish-client
+
+# Estágio final (onde tudo se encontra)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# COPIA OS ARQUIVOS DO FRONT PARA DENTRO DA API
+COPY --from=publish-client /app/publish-client/wwwroot ./wwwroot
+
 ENTRYPOINT ["dotnet", "LupoQuimica.Api.dll"]
+
