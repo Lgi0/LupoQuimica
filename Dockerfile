@@ -9,7 +9,7 @@ COPY ["LupoQuimica.Shared/LupoQuimica.Shared.csproj", "LupoQuimica.Shared/"]
 RUN dotnet restore "LupoQuimica.Api/LupoQuimica.Api.csproj"
 
 # Copia o restante e compila
-COPY . .
+COPY . ./
 WORKDIR "/src/LupoQuimica.Api"
 RUN dotnet build "LupoQuimica.Api.csproj" -c Release -o /app/build
 
