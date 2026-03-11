@@ -19,6 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddCors(options => {
     options.AddPolicy("LupoPolicy", policy =>
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -59,7 +60,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseBlazorFrameworkFiles(); // Essencial para Blazor WASM
+//app.UseBlazorFrameworkFiles(); // Essencial para Blazor WASM
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
