@@ -22,22 +22,19 @@ RUN dotnet publish "LupoQuimica.Api.csproj" -c Release -o /app/publish/api
 WORKDIR "/src/LupoQuimica.Client"
 RUN dotnet publish "LupoQuimica.Client.csproj" -c Release -o /app/publish/client
 
-# ... (Mantenha o build igual até a parte final) ...
-
 # Estágio Final
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
-# 1. Copia os binários da API
+# Copia a API
 COPY --from=build /app/publish/api .
 
-# 2. Força a criação da pasta wwwroot e copia o conteúdo do Client
-# O segredo está no "*" para pegar o conteúdo de dentro do wwwroot gerado
-RUN mkdir -p wwwroot
-COPY --from=build /app/publish/client/wwwroot ./wwwroot/
+# O GRANDE TRUQUE: 
+# Copiamos o conteúdo da pasta wwwroot do client direto para a pasta wwwroot da API
+COPY --from=build /app/publish/client/wwwroot/. ./wwwroot/
 
-# Verifica se o arquivo existe (Isso vai aparecer no log do Railway se falhar)
-RUN ls -la ./wwwroot/_framework/blazor.webassembly.js || echo "ARQUIVO NAO ENCONTRADO NO BUILD"
+# Esse comando abaixo é para você ver no log do Railway se o arquivo está lá
+RUN ls -R ./wwwroot/_framework/
 
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
