@@ -17,6 +17,52 @@
         </div>
     </div>
 
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-success text-white" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase small fw-bold opacity-75">Total de Produtos</h6>
+                    <h2 class="fw-bold mb-0">@(produtos?.Count ?? 0)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 15px; border-left: 5px solid #11533a !important;">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase small fw-bold text-muted">Categorias Ativas</h6>
+                    <h2 class="fw-bold mb-0" style="color: #11533a;">@categorias.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <h6 class="text-uppercase small fw-bold text-muted">Último Cadastro</h6>
+                    <h2 class="fs-5 fw-bold mb-0 text-truncate">@(produtos?.LastOrDefault()?.Nome ?? "---")</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3 g-2">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Buscar por nome ou marca..."
+                       @bind="filtroTexto" @bind:event="oninput" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" @bind="categoriaSelecionadaId">
+                <option value="0">Todas as Categorias</option>
+                @foreach (var cat in categorias)
+                {
+                    <option value="@cat.Id">@cat.Nome</option>
+                }
+            </select>
+        </div>
+    </div>
+
     @if (produtos == null)
     {
         <div class="text-center p-5">
@@ -33,12 +79,12 @@
                         <tr>
                             <th class="ps-4">Produto</th>
                             <th>Categoria</th>
-                            <th>Princípio Ativo</th>
+                            <th>Marca</th>
                             <th class="text-end pe-4">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var p in produtos)
+                        @foreach (var p in ProdutosFiltrados)
                         {
                             <tr>
                                 <td class="ps-4 fw-bold">@p.Nome</td>
@@ -47,7 +93,7 @@
                                         @(categorias.FirstOrDefault(c => c.Id == p.CategoriaId)?.Nome ?? "Sem Categoria")
                                     </span>
                                 </td>
-                                <td class="text-muted small">@p.PrincipioAtivo</td>
+                                <td class="text-muted small">@p.Marca</td>
                                 <td class="text-end pe-4">
                                     <button class="btn btn-sm btn-light text-primary me-2" @onclick="() => EditarProduto(p)">
                                         <i class="bi bi-pencil-square"></i>
@@ -92,13 +138,20 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold">Princípio Ativo</label>
-                            <input @bind="produtoEmEdicao.PrincipioAtivo" class="form-control rounded-3" />
+                            <label class="form-label small fw-bold">Marca</label>
+                            <input @bind="produtoEmEdicao.Marca" class="form-control rounded-3" placeholder="Ex: Lupo" />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">URL da Imagem</label>
-                        <input @bind="produtoEmEdicao.ImagemUrl" class="form-control rounded-3" placeholder="https://..." />
+                        <label class="form-label small fw-bold">Imagem do Produto</label>
+                        <InputFile OnChange="HandleFileSelected" class="form-control rounded-3" />
+                        @if (!string.IsNullOrEmpty(produtoEmEdicao.ImagemUrl))
+                        {
+                            <div class="mt-2">
+                                <img src="@produtoEmEdicao.ImagemUrl" style="height: 50px; border-radius: 5px;" />
+                                <span class="small text-muted ms-2">Preview da imagem</span>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
@@ -147,6 +200,33 @@
     private string novaCategoriaNome = "";
     private bool mostrarModalProduto = false;
     private bool mostrarModalCategorias = false;
+    private string filtroTexto = "";
+    private int categoriaSelecionadaId = 0;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            // Redimensiona para não pesar o banco (max 512kb, por exemplo)
+            var resizedFile = await file.RequestImageFileAsync(file.ContentType, 400, 400);
+            var buf = new byte[resizedFile.Size];
+            using (var stream = resizedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buf);
+            }
+            // Transforma em uma string que o navegador entende como imagem
+            produtoEmEdicao.ImagemUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buf)}";
+        }
+    }
+
+    private IEnumerable<Produto> ProdutosFiltrados =>
+    produtos?.Where(p =>
+        (categoriaSelecionadaId == 0 || p.CategoriaId == categoriaSelecionadaId) &&
+        (string.IsNullOrWhiteSpace(filtroTexto) ||
+         p.Nome.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase) ||
+         p.Marca.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)) // Atualizado para Marca
+    ) ?? new List<Produto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,7 +250,7 @@
 
     private void EditarProduto(Produto p)
     {
-        produtoEmEdicao = new Produto { Id = p.Id, Nome = p.Nome, CategoriaId = p.CategoriaId, PrincipioAtivo = p.PrincipioAtivo, ImagemUrl = p.ImagemUrl };
+        produtoEmEdicao = new Produto { Id = p.Id, Nome = p.Nome, CategoriaId = p.CategoriaId, Marca = p.Marca, ImagemUrl = p.ImagemUrl };
         mostrarModalProduto = true;
     }
 
