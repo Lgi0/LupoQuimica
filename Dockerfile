@@ -1,45 +1,40 @@
-# Estágio de Build - Usando SDK 10.0
+# 1. Estágio de Build (SDK)
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Copia os arquivos de projeto
+# Copia os arquivos de projeto (incluindo o Client e Shared que estavam faltando)
 COPY ["LupoQuimica.Api/LupoQuimica.Api.csproj", "LupoQuimica.Api/"]
+COPY ["LupoQuimica.Client/LupoQuimica.Client.csproj", "LupoQuimica.Client/"]
 COPY ["LupoQuimica.Shared/LupoQuimica.Shared.csproj", "LupoQuimica.Shared/"]
 
+# Restaura as dependências de tudo
 RUN dotnet restore "LupoQuimica.Api/LupoQuimica.Api.csproj"
+RUN dotnet restore "LupoQuimica.Client/LupoQuimica.Client.csproj"
 
-# Copia o restante e compila
-COPY . ./
+# Copia o código todo
+COPY . .
+
+# 2. Publica a API
 WORKDIR "/src/LupoQuimica.Api"
-RUN dotnet build "LupoQuimica.Api.csproj" -c Release -o /app/build
+RUN dotnet publish "LupoQuimica.Api.csproj" -c Release -o /app/publish/api
 
-# Publica
-FROM build AS publish
-RUN dotnet publish "LupoQuimica.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+# 3. Publica o Client (Blazor)
+WORKDIR "/src/LupoQuimica.Client"
+RUN dotnet publish "LupoQuimica.Client.csproj" -c Release -o /app/publish/client
 
-# Estágio final (Runtime) - Usando ASP.NET 10.0
+# 4. Estágio Final (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
 
+# Copia a API primeiro
+COPY --from=build /app/publish/api .
+
+# Copia o Front-end para dentro da pasta wwwroot da API
+# É isso que resolve o erro 404 do blazor.webassembly.js!
+COPY --from=build /app/publish/client/wwwroot ./wwwroot
+
+# Configurações do Railway
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-# Etapa de publicação da API
-FROM build AS publish
-RUN dotnet publish "LupoQuimica.Api/LupoQuimica.Api.csproj" -c Release -o /app/publish
-
-# Etapa de publicação do Client (O QUE PODE ESTAR FALTANDO)
-FROM build AS publish-client
-RUN dotnet publish "LupoQuimica.Client/LupoQuimica.Client.csproj" -c Release -o /app/publish-client
-
-# Estágio final (onde tudo se encontra)
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-
-# COPIA OS ARQUIVOS DO FRONT PARA DENTRO DA API
-COPY --from=publish-client /app/publish-client/wwwroot ./wwwroot
-
 ENTRYPOINT ["dotnet", "LupoQuimica.Api.dll"]
-
