@@ -52,9 +52,11 @@ using (var scope = app.Services.CreateScope())
 // Ativa a interface visual do Swagger para você testar a API no navegador
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("LupoPolicy");
 app.UseAuthentication(); // <-- Quem é você?
