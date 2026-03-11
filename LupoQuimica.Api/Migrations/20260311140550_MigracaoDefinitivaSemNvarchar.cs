@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LupoQuimica.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracaoPostgresSemNvarchar : Migration
+    public partial class MigracaoDefinitivaSemNvarchar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

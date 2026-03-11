@@ -10,6 +10,5 @@ public class Produto
     public string Marca { get; set; } = string.Empty;
     public decimal Preco { get; set; }
     public int CategoriaId { get; set; } // Em vez de string Categoria
-    [Column(TypeName = "nvarchar(max)")]
     public string ImagemUrl { get; set; } = string.Empty;
 }
