@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LupoQuimica.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260311125432_InitialPostgres")]
-    partial class InitialPostgres
+    [Migration("20260311134953_MigracaoPostgres")]
+    partial class MigracaoPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
