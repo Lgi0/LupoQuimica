@@ -42,6 +42,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
 var app = builder.Build();
 
 // Migração automática (O "coração" do deploy)
@@ -51,13 +52,18 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
 }
 
+
 // Swagger fora do IF para podermos ver no Railway
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseBlazorFrameworkFiles(); // Essencial para Blazor WASM
+app.UseStaticFiles();
 
 app.UseCors("LupoPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapFallbackToFile("index.html"); // Isso garante que o Front carregue na raiz
 
 app.Run();

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LupoQuimica.Client\LupoQuimica.Client.csproj" />
     <ProjectReference Include="..\LupoQuimica.Shared\LupoQuimica.Shared.csproj" />
   </ItemGroup>
 
