@@ -29,9 +29,9 @@ WORKDIR /app
 # Copia a API primeiro
 COPY --from=build /app/publish/api .
 
-# Copia o Front-end para dentro da pasta wwwroot da API
-# É isso que resolve o erro 404 do blazor.webassembly.js!
-COPY --from=build /app/publish/client/wwwroot ./wwwroot
+# AJUSTE AQUI: Copia o CONTEÚDO da pasta wwwroot do client para a raiz da API
+# Note o ponto no final do caminho de origem
+COPY --from=build /app/publish/client/wwwroot ./wwwroot/
 
 # Configurações do Railway
 ENV ASPNETCORE_URLS=http://+:8080
