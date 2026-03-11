@@ -42,6 +42,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate(); // Isso cria as tabelas no Railway automaticamente
+}
+
 // Ativa a interface visual do Swagger para você testar a API no navegador
 if (app.Environment.IsDevelopment())
 {
