@@ -1,0 +1,71 @@
+﻿@page "/login"
+@using LupoQuimica.Shared
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 400px; border-radius: 20px;">
+        <div class="card-body p-5 text-center">
+            <img src="https://i.imgur.com/MABAFij.png" alt="Lupo Logo" style="height: 60px;" class="mb-4" />
+            <h3 class="fw-bold mb-4" style="color: #11533a;">Acesso Restrito</h3>
+
+            @if (!string.IsNullOrEmpty(mensagemErro))
+            {
+                <div class="alert alert-danger py-2 small">@mensagemErro</div>
+            }
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="user" placeholder="Usuário" @bind="loginModel.Usuario">
+                <label for="user">Usuário</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="pass" placeholder="Senha" @bind="loginModel.Senha">
+                <label for="pass">Senha</label>
+            </div>
+
+            <button class="btn btn-lg w-100 text-white fw-bold mb-3"
+                    style="background-color: #11533a; border-radius: 10px;"
+                    @onclick="ExecutarLogin">
+                Entrar
+            </button>
+
+            <a href="/" class="text-decoration-none text-muted small">Voltar para a vitrine</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private string mensagemErro = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await LocalStorage.GetItemAsync<string>("authToken");
+        if (!string.IsNullOrEmpty(token))
+        {
+            Nav.NavigateTo("/admin");
+        }
+    }
+
+    private async Task ExecutarLogin()
+    {
+        var response = await Http.PostAsJsonAsync("api/auth/login", loginModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var resultado = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            await LocalStorage.SetItemAsync("authToken", resultado.Token);
+
+            // O forceLoad: true força o cabeçalho a se reconstruir e ler o token
+            Nav.NavigateTo("/admin", forceLoad: true);
+        }
+        else
+        {
+            mensagemErro = "Usuário ou senha incorretos.";
+        }
+    }
+
+    public class LoginResponse { public string Token { get; set; } }
+}
