@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LupoQuimica.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracaoPostgres : Migration
+    public partial class MigracaoPostgresSemNvarchar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,7 @@ namespace LupoQuimica.Api.Migrations
                     Marca = table.Column<string>(type: "text", nullable: false),
                     Preco = table.Column<decimal>(type: "numeric", nullable: false),
                     CategoriaId = table.Column<int>(type: "integer", nullable: false),
-                    ImagemUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImagemUrl = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

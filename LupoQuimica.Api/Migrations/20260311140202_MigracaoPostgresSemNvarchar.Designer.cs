@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LupoQuimica.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260311134953_MigracaoPostgres")]
-    partial class MigracaoPostgres
+    [Migration("20260311140202_MigracaoPostgresSemNvarchar")]
+    partial class MigracaoPostgresSemNvarchar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,7 @@ namespace LupoQuimica.Api.Migrations
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Marca")
                         .IsRequired()

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+// Versao do Deploy: 2.0
 var builder = WebApplication.CreateBuilder(args);
 
 // Tenta pegar a conexão da variável do Railway, se não tiver, usa a fixa (fallback)

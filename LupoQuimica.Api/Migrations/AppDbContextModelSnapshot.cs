@@ -55,7 +55,7 @@ namespace LupoQuimica.Api.Migrations
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Marca")
                         .IsRequired()
