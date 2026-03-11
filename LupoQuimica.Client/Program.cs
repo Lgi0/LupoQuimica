@@ -9,7 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var apiUri = builder.HostEnvironment.IsDevelopment()
     ? "https://localhost:7212"
-    : "https://lupo-quimica-production.up.railway.app/";
+    : "https://lupoquimica-production.up.railway.app/";
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUri) });
 builder.Services.AddBlazoredLocalStorage();

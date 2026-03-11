@@ -20,9 +20,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddCors(options => {
-    options.AddPolicy("LupoPolicy", policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin() // Permite qualquer site (incluindo o seu com ou sem hífen)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 // Proteção para não quebrar se a chave JWT não estiver configurada
@@ -47,6 +52,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 var app = builder.Build();
+
+
+app.UseCors("AllowAll"); // ESSA LINHA É ESSENCIAL
+
 
 // Migração automática (O "coração" do deploy)
 using (var scope = app.Services.CreateScope())
