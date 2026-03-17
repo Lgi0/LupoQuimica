@@ -1,79 +1,122 @@
 ﻿@page "/"
+@using LupoQuimica.Shared
 @inject HttpClient Http
 
-<PageTitle>Lupo Química | Início</PageTitle>
+<PageTitle>Lupo Química | Catálogo</PageTitle>
 
 @* --- CARROSSEL --- *@
 <div id="factoryCarousel" class="carousel slide carousel-fade shadow-lg mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="0" class="active"></button>
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="2"></button>
     </div>
 
     <div class="carousel-inner rounded-bottom-4">
         @* Slide 1: Fábrica *@
         <div class="carousel-item active" data-bs-interval="5000">
             <div class="overlay"></div>
-            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1920" class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
-            <div class="carousel-caption text-start">
-                <h1 class="display-4 fw-bold text-white">Lupo Química</h1>
-                <p class="lead">Excelência e tecnologia em produtos industriais.</p>
+            <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg" class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold">Lupo Química</h1>
+                <p class="lead">Soluções inovadoras para a indústria química moderna.</p>
+                <a href="#produtos" class="btn btn-primary btn-lg rounded-pill px-4">Conheça nossos produtos</a>
             </div>
         </div>
 
-        @* Slide 2: Empório da Limpeza (Com o seu logo!) *@
-        <div class="carousel-item" data-bs-interval="5000">
-            <div class="overlay-blue"></div>
-            <img src="https://images.unsplash.com/photo-1513530534585-c7b1394c6d51?auto=format&fit=crop&q=80&w=1920" class="d-block w-100 banner-img" alt="Emporio da Limpeza">
-            <div class="carousel-caption text-center">
-                @* Aqui chamamos o logo que você me enviou *@
-                <img src="images/logo-emporio.png" alt="Logo Empório" style="max-width: 300px; margin-bottom: 20px;" />
-                <p class="lead fw-bold">Nossa loja física com a linha completa para você.</p>
-                <a href="https://www.google.com/maps" target="_blank" class="btn btn-light btn-lg text-primary fw-bold">Ver Localização</a>
-            </div>
-        </div>
-
-        @* Slide 3: Qualidade *@
+        @* Slide 2: Empório da Limpeza *@
         <div class="carousel-item" data-bs-interval="5000">
             <div class="overlay"></div>
-            <img src="https://images.unsplash.com/photo-1532187875605-2fe35851142b?auto=format&fit=crop&q=80&w=1920" class="d-block w-100 banner-img" alt="Laboratório">
-            <div class="carousel-caption text-end">
-                <h1 class="display-4 fw-bold text-white">Qualidade Certificada</h1>
-                <p class="lead">Controle rigoroso em cada lote produzido.</p>
+            @* Certifique-se de que a imagem está em wwwroot/images/logo-emporio.png *@
+            <img src="images/logo-emporio.png" class="d-block w-100 banner-img bg-white" alt="Emporio da Limpeza" style="object-fit: contain; padding: 50px;">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold text-dark">Do Laboratório ao Varejo</h1>
+                <p class="lead text-dark">Visite nossa loja física, o <b>Empório da Limpeza</b>, e conheça nossa linha completa.</p>
+                <a href="https://instagram.com/emporiodalimpezasp" target="_blank" class="btn btn-outline-primary btn-lg rounded-pill px-4">Siga no Instagram</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <h2 class="text-center mb-4 text-primary fw-bold">Nossos Produtos</h2>
-    @* O seu código do @foreach (var produto in produtos) entra aqui embaixo *@
+<div class="container mt-4" id="produtos">
+    @* --- BARRA DE FILTROS --- *@
+    <div class="row g-3 mb-5 justify-content-center">
+        <div class="col-md-5">
+            <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-success"></i></span>
+                <input type="text" class="form-control border-start-0" placeholder="O que você procura?"
+                       @bind="filtroTexto" @bind:event="oninput" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select shadow-sm" @bind="categoriaSelecionadaId">
+                <option value="0">Todas as Categorias</option>
+                @foreach (var cat in categorias)
+                {
+                    <option value="@cat.Id">@cat.Nome</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @* --- LISTAGEM DE PRODUTOS --- *@
+    @if (produtos == null)
+    {
+        <div class="text-center p-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2 text-muted">Carregando catálogo...</p>
+        </div>
+    }
+    else if (!ProdutosFiltrados.Any())
+    {
+        <div class="text-center p-5">
+            <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-3 text-muted">Nenhum produto encontrado para essa busca.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var produto in ProdutosFiltrados)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 product-card" style="border-radius: 15px; transition: transform 0.2s;">
+                        <div class="p-3 text-center bg-light" style="border-radius: 15px 15px 0 0;">
+                            <img src="@produto.ImagemUrl" class="card-img-top"
+                                 style="height: 180px; object-fit: contain;"
+                                 alt="@produto.Nome">
+                        </div>
+                        <div class="card-body">
+                            <span class="badge bg-success bg-opacity-10 text-success mb-2">
+                                @ObterNomeCategoria(produto.CategoriaId)
+                            </span>
+                            <h5 class="card-title fw-bold text-dark">@produto.Nome</h5>
+                            <p class="card-text text-muted small mb-3">
+                                <strong>Marca:</strong> @produto.Marca
+                            </p>
+                            <a href="detalhes/@produto.Id" class="btn btn-success w-100 rounded-pill fw-bold">
+                                Ver Detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 <style>
     .banner-img {
-        height: 550px;
+        height: 500px;
         object-fit: cover;
     }
 
     .overlay {
         position: absolute;
-        width: 100%;
-        height: 100%;
         top: 0;
         left: 0;
-        background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
-        z-index: 1;
-    }
-
-    .overlay-blue {
-        position: absolute;
         width: 100%;
         height: 100%;
-        top: 0;
-        left: 0;
-        background: linear-gradient(rgba(0, 123, 255, 0.4), rgba(0, 0, 0, 0.6));
+        background: rgba(0, 0, 0, 0.3);
         z-index: 1;
     }
 
@@ -81,4 +124,40 @@
         z-index: 2;
         bottom: 20%;
     }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
 </style>
+
+@code {
+    private List<Produto> produtos;
+    private List<Categoria> categorias = new();
+    private string filtroTexto = "";
+    private int categoriaSelecionadaId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            produtos = await Http.GetFromJsonAsync<List<Produto>>("api/produtos");
+            categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/categorias") ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar dados: {ex.Message}");
+            produtos = new List<Produto>();
+        }
+    }
+
+    private IEnumerable<Produto> ProdutosFiltrados =>
+        produtos?.Where(p =>
+            (categoriaSelecionadaId == 0 || p.CategoriaId == categoriaSelecionadaId) &&
+            (string.IsNullOrWhiteSpace(filtroTexto) ||
+             p.Nome.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase) ||
+             p.Marca.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
+        ) ?? new List<Produto>();
+
+    private string ObterNomeCategoria(int id)
+        => categorias.FirstOrDefault(c => c.Id == id)?.Nome ?? "Geral";
+}
