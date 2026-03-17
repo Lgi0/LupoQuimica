@@ -2,6 +2,43 @@
 @using LupoQuimica.Shared
 @inject HttpClient Http
 
+@* --- SEÇÃO DO CARROSSEL --- *@
+<div class="container-fluid p-0 mb-5">
+    <SfCarousel AnimationEffect="CarouselAnimationEffect.Fade" AutoPlay="true">
+        <CarouselItem>
+            <div class="item-container">
+                <img src="images/banner-quimica-1.jpg" class="d-block w-100 banner-img" />
+                <div class="caption-overlay">
+                    <h1 class="display-4 fw-bold">Lupo Química</h1>
+                    <p class="lead">Inovação e qualidade em cada solução industrial.</p>
+                </div>
+            </div>
+        </CarouselItem>
+        @* Adicione mais CarouselItem aqui conforme precisar *@
+    </SfCarousel>
+</div>
+
+<style>
+    .banner-img {
+        height: 500px;
+        object-fit: cover;
+        filter: brightness(0.6); /* Deixa a imagem mais escura pro texto brilhar */
+    }
+
+    .item-container {
+        position: relative;
+    }
+
+    .caption-overlay {
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+</style>
+
 <div class="container mt-4">
 
     @* --- BARRA DE FILTROS --- *@
