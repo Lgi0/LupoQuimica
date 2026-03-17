@@ -10,12 +10,13 @@
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="0" class="active"></button>
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="1"></button>
     </div>
-
     <div class="carousel-inner rounded-bottom-4">
+
         @* Slide 1: Fábrica *@
         <div class="carousel-item active" data-bs-interval="5000">
+            <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg"
+                 class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
             <div class="overlay"></div>
-            <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg" class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
             <div class="carousel-caption d-none d-md-block text-start">
                 <h1 class="display-4 fw-bold">Lupo Química</h1>
                 <p class="lead">Excelência e tecnologia em produtos industriais.</p>
@@ -25,26 +26,27 @@
 
         @* Slide 2: Empório da Limpeza *@
         <div class="carousel-item" data-bs-interval="5000">
-            @* Fundo neutro *@
             <img src="images/fundo-neutro-premium.jpeg" class="d-block w-100 banner-img" alt="Emporio da Limpeza">
-
-            @* Overlay azul para melhorar contraste *@
             <div class="overlay-blue"></div>
-
-            @* Caption Centralizada com Flexbox *@
-            <div class="carousel-caption d-none d-md-block text-center d-flex flex-column align-items-center justify-content-center h-100">
-                @* Certifique-se de que o nome do arquivo é logo-emporio2.png e está em wwwroot/images *@
-                <img src="images/logo-emporio2.png" alt="Logo Empório" class="logo-flutuante mb-4" />
-
-                <div class="texto-suporte">
-                    <h2 class="display-6 fw-bold text-dark mb-0">Do Laboratório ao Varejo</h2>
-                    <p class="lead text-dark fw-normal">Sua linha completa de produtos de limpeza, direto da fábrica.</p>
-                </div>
-
-                <a href="https://instagram.com/emporiodalimpezasp" target="_blank" class="btn btn-outline-primary btn-lg rounded-pill px-4 mt-4 shadow fw-bold">Siga no Instagram</a>
+            <div class="carousel-caption d-none d-md-block">
+                <img src="images/logo-emporio2.png" alt="Logo Empório" class="logo-flutuante mb-3">
+                <h2 class="display-6 fw-bold text-dark mb-1">Do Laboratório ao Varejo</h2>
+                <p class="lead text-dark fw-normal">Sua linha completa de produtos de limpeza, direto da fábrica.</p>
+                <a href="https://instagram.com/emporiodalimpezasp" target="_blank"
+                   class="btn btn-outline-primary btn-lg rounded-pill px-4 mt-3 shadow fw-bold">
+                    Siga no Instagram
+                </a>
             </div>
         </div>
+
     </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#factoryCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#factoryCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
 </div>
 
 <div class="container mt-4" id="produtos">
@@ -106,52 +108,42 @@
     }
 </div>
 
-<style>
-    .banner-img {
-        height: 500px;
-        object-fit: cover;
-    }
+/* Altura fixa do banner */
+.banner-img {
+    height: 520px;
+    object-fit: cover;
+    object-position: center;
+}
 
-    .overlay, .overlay-blue {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-    }
+/* Overlay escuro para o Slide 1 */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
 
-    .overlay {
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1;
-    }
+/* Overlay azul semitransparente para o Slide 2 */
+.overlay-blue {
+    position: absolute;
+    inset: 0;
+    background: rgba(200, 220, 255, 0.55);
+    z-index: 1;
+}
 
-    .overlay-blue {
-        background: radial-gradient(circle at center, rgba(3, 169, 244, 0.1) 0%, transparent 80%);
-        z-index: 5;
-    }
+/* O caption precisa ficar acima dos overlays */
+.carousel-caption {
+    z-index: 2;
+    bottom: 15%;
+}
 
-    .carousel-caption {
-        z-index: 10;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-
-    .logo-flutuante {
-        max-width: 380px;
-        height: auto;
-        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-    }
-
-    .texto-suporte {
-        max-width: 600px;
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-    }
-</style>
+/* Logo no slide 2 */
+.logo-flutuante {
+    max-height: 100px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
 
 @code {
     private List<Produto> produtos;
