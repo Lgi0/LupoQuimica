@@ -14,7 +14,7 @@
 
         @* Slide 1: Fábrica *@
         <div class="carousel-item active" data-bs-interval="5000">
-            <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg"
+            <img src="images/slide1.jpeg"
                  class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
             <div class="overlay"></div>
             <div class="carousel-caption d-none d-md-block text-start">
@@ -26,14 +26,12 @@
 
         @* Slide 2: Empório da Limpeza *@
         <div class="carousel-item" data-bs-interval="5000">
-            <img src="images/fundo-neutro-premium.jpeg" class="d-block w-100 banner-img" alt="Emporio da Limpeza">
-            <div class="overlay-blue"></div>
-            <div class="carousel-caption d-none d-md-block">
-                <img src="images/logo-emporio2.png" alt="Logo Empório" class="logo-flutuante mb-3">
-                <h2 class="display-6 fw-bold text-dark mb-1">Do Laboratório ao Varejo</h2>
-                <p class="lead text-dark fw-normal">Sua linha completa de produtos de limpeza, direto da fábrica.</p>
+            <img src="images/logo-emporio2.png" alt="Logo Empório" class="d-block w-100 banner-img">
+            <div class="overlay2"></div>
+            <div class="carousel-caption d-none d-md-block text-start">
+                <p class="display-6 fw-bold">Conheça também nossa loja!</p>
                 <a href="https://instagram.com/emporiodalimpezasp" target="_blank"
-                   class="btn btn-outline-primary btn-lg rounded-pill px-4 mt-3 shadow fw-bold">
+                   class="btn btn-primary btn-lg rounded-pill px-4">
                     Siga no Instagram
                 </a>
             </div>
@@ -108,42 +106,85 @@
     }
 </div>
 
-/* Altura fixa do banner */
-.banner-img {
-    height: 520px;
-    object-fit: cover;
-    object-position: center;
-}
+<style>
+    /* ===== BANNER / CARROSSEL ===== */
+    .banner-img {
+        height: 380px;
+        object-fit: cover;
+        object-position: center;
+    }
 
-/* Overlay escuro para o Slide 1 */
-.overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 1;
-}
+    @@media (min-width: 768px) {
+        .banner-img {
+            height: 500px;
+        }
+    }
 
-/* Overlay azul semitransparente para o Slide 2 */
-.overlay-blue {
-    position: absolute;
-    inset: 0;
-    background: rgba(200, 220, 255, 0.55);
-    z-index: 1;
-}
+    .logo-flutuante {
+        max-height: 380px;
+        max-width: 550px;
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+    }
 
-/* O caption precisa ficar acima dos overlays */
-.carousel-caption {
-    z-index: 2;
-    bottom: 15%;
-}
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1;
+    }
 
-/* Logo no slide 2 */
-.logo-flutuante {
-    max-height: 100px;
-    width: auto;
-    display: block;
-    margin: 0 auto;
-}
+    .overlay2 {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        font-weight: bold;
+    }
+
+    .overlay-blue {
+        position: absolute;
+        inset: 0;
+        background: rgba(200, 220, 255, 0.55);
+        z-index: 1;
+    }
+
+    .carousel-caption {
+        z-index: 2;
+        bottom: 3%;
+    }
+
+    /* ===== SLIDE 2 - EMPÓRIO ===== */
+    .slide-emporio {
+        height: 380px;
+        background-color: #dce8f5;
+        position: relative;
+    }
+
+    @@media (min-width: 768px) {
+        .slide-emporio {
+            height: 380px;
+        }
+    }
+
+    .slide-emporio .carousel-caption {
+        position: absolute;
+        top: 50%;
+        bottom: auto;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+    }
+
+    .logo-flutuante {
+        max-height: 380px;
+        max-width: 600px;
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
 
 @code {
     private List<Produto> produtos;
