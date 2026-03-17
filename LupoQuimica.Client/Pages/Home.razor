@@ -4,7 +4,7 @@
 
 <PageTitle>Lupo Química | Catálogo</PageTitle>
 
-@* --- CARROSSEL --- *@
+@* --- INÍCIO DO CARROSSEL --- *@
 <div id="factoryCarousel" class="carousel slide carousel-fade shadow-lg mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="0" class="active"></button>
@@ -18,24 +18,35 @@
             <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg" class="d-block w-100 banner-img" alt="Fábrica Lupo Química">
             <div class="carousel-caption d-none d-md-block text-start">
                 <h1 class="display-4 fw-bold">Lupo Química</h1>
-                <p class="lead">Soluções inovadoras para a indústria química moderna.</p>
+                <p class="lead">Excelência e tecnologia em produtos industriais.</p>
                 <a href="#produtos" class="btn btn-primary btn-lg rounded-pill px-4">Conheça nossos produtos</a>
             </div>
         </div>
 
-        @* Slide 2: Empório da Limpeza *@
+        @* Slide 2: Empório da Limpeza (DESIGN MELHORADO) *@
         <div class="carousel-item" data-bs-interval="5000">
-            <div class="overlay"></div>
-            @* Certifique-se de que a imagem está em wwwroot/images/logo-emporio.png *@
-            <img src="images/logo-emporio2.png" class="d-block w-100 banner-img bg-white" alt="Emporio da Limpeza" style="object-fit: contain; padding: 50px;">
-            <div class="carousel-caption d-none d-md-block text-start">
-                <h1 class="display-4 fw-bold text-dark">Do Laboratório ao Varejo</h1>
-                <p class="lead text-dark">Visite nossa loja física, o <b>Empório da Limpeza</b>, e conheça nossa linha completa.</p>
-                <a href="https://instagram.com/emporiodalimpezasp" target="_blank" class="btn btn-outline-primary btn-lg rounded-pill px-4">Siga no Instagram</a>
+            <div class="overlay-blue"></div>
+            @* Fundo neutro e chique *@
+            <img src="images/fundo-neutro-premium.jpeg" class="d-block w-100 banner-img" alt="Emporio da Limpeza">
+
+            @* Caption Centralizada Verticamente com o Logo *@
+            <div class="carousel-caption d-none d-md-block text-center d-flex flex-column align-items-center justify-content-center h-100 pb-0" style="z-index: 10;">
+                @* O Logo flutuando no centro *@
+                <img src="images/logo-emporio.png" alt="Logo Empório" class="logo-flutuante shadow-lg mb-4" />
+
+                @* Legendas com melhor legibilidade *@
+                <div class="texto-suporte">
+                    <h2 class="display-6 fw-bold text-dark mb-0">Do Laboratório ao Varejo</h2>
+                    <p class="lead text-dark fw-normal">Sua linha completa de produtos de limpeza, direto da fábrica.</p>
+                </div>
+
+                @* O botão que já existia *@
+                <a href="https://instagram.com/emporiodalimpezasp" target="_blank" class="btn btn-outline-primary btn-lg rounded-pill px-4 mt-4 shadow fw-bold">Siga no Instagram</a>
             </div>
         </div>
     </div>
 </div>
+@* --- FIM DO CARROSSEL --- *@
 
 <div class="container mt-4" id="produtos">
     @* --- BARRA DE FILTROS --- *@
@@ -104,6 +115,7 @@
     }
 </div>
 
+@* --- ESTILOS CSS --- *@
 <style>
     .banner-img {
         height: 500px;
@@ -112,23 +124,45 @@
 
     .overlay {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.4);
         z-index: 1;
     }
 
-    .carousel-caption {
-        z-index: 2;
-        bottom: 20%;
+    /* Brilho azul sutil para o slide do Empório */
+    .overlay-blue {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: radial-gradient(circle at center, rgba(3, 169, 244, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%, transparent 100%);
+        z-index: 5;
     }
 
-    .product-card:hover {
-        transform: translateY(-5px);
+    .carousel-caption {
+        z-index: 10;
+        bottom: 25%;
+    }
+
+    .logo-flutuante {
+        max-width: 400px;
+        height: auto;
+        /* Sombra suave para o logo */
+        filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+    }
+
+    .texto-suporte {
+        max-width: 600px;
     }
 </style>
+
+@code {
+    @* O seu código do @code bloco entra aqui *@
+}
 
 @code {
     private List<Produto> produtos;
