@@ -4,7 +4,7 @@
 
 <PageTitle>Lupo Química | Catálogo</PageTitle>
 
-@* --- INÍCIO DO CARROSSEL --- *@
+@* --- CARROSSEL --- *@
 <div id="factoryCarousel" class="carousel slide carousel-fade shadow-lg mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="0" class="active"></button>
@@ -23,33 +23,32 @@
             </div>
         </div>
 
-        @* Slide 2: Empório da Limpeza (DESIGN MELHORADO) *@
+        @* Slide 2: Empório da Limpeza *@
         <div class="carousel-item" data-bs-interval="5000">
-            <div class="overlay-blue"></div>
-            @* Fundo neutro e chique *@
+            @* Fundo neutro *@
             <img src="images/fundo-neutro-premium.jpeg" class="d-block w-100 banner-img" alt="Emporio da Limpeza">
 
-            @* Caption Centralizada Verticamente com o Logo *@
-            <div class="carousel-caption d-none d-md-block text-center d-flex flex-column align-items-center justify-content-center h-100 pb-0" style="z-index: 10;">
-                @* O Logo flutuando no centro *@
-                <img src="images/logo-emporio2.png" alt="Logo Empório" class="logo-flutuante shadow-lg mb-4" />
+            @* Overlay azul para melhorar contraste *@
+            <div class="overlay-blue"></div>
 
-                @* Legendas com melhor legibilidade *@
+            @* Caption Centralizada com Flexbox *@
+            <div class="carousel-caption d-none d-md-block text-center d-flex flex-column align-items-center justify-content-center h-100">
+                @* Certifique-se de que o nome do arquivo é logo-emporio2.png e está em wwwroot/images *@
+                <img src="images/logo-emporio2.png" alt="Logo Empório" class="logo-flutuante mb-4" />
+
                 <div class="texto-suporte">
                     <h2 class="display-6 fw-bold text-dark mb-0">Do Laboratório ao Varejo</h2>
                     <p class="lead text-dark fw-normal">Sua linha completa de produtos de limpeza, direto da fábrica.</p>
                 </div>
 
-                @* O botão que já existia *@
                 <a href="https://instagram.com/emporiodalimpezasp" target="_blank" class="btn btn-outline-primary btn-lg rounded-pill px-4 mt-4 shadow fw-bold">Siga no Instagram</a>
             </div>
         </div>
     </div>
 </div>
-@* --- FIM DO CARROSSEL --- *@
 
 <div class="container mt-4" id="produtos">
-    @* --- BARRA DE FILTROS --- *@
+    @* --- FILTROS --- *@
     <div class="row g-3 mb-5 justify-content-center">
         <div class="col-md-5">
             <div class="input-group shadow-sm">
@@ -69,7 +68,7 @@
         </div>
     </div>
 
-    @* --- LISTAGEM DE PRODUTOS --- *@
+    @* --- PRODUTOS --- *@
     @if (produtos == null)
     {
         <div class="text-center p-5">
@@ -81,7 +80,7 @@
     {
         <div class="text-center p-5">
             <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
-            <p class="mt-3 text-muted">Nenhum produto encontrado para essa busca.</p>
+            <p class="mt-3 text-muted">Nenhum produto encontrado.</p>
         </div>
     }
     else
@@ -92,21 +91,13 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm border-0 product-card" style="border-radius: 15px; transition: transform 0.2s;">
                         <div class="p-3 text-center bg-light" style="border-radius: 15px 15px 0 0;">
-                            <img src="@produto.ImagemUrl" class="card-img-top"
-                                 style="height: 180px; object-fit: contain;"
-                                 alt="@produto.Nome">
+                            <img src="@produto.ImagemUrl" class="card-img-top" style="height: 180px; object-fit: contain;" alt="@produto.Nome">
                         </div>
                         <div class="card-body">
-                            <span class="badge bg-success bg-opacity-10 text-success mb-2">
-                                @ObterNomeCategoria(produto.CategoriaId)
-                            </span>
+                            <span class="badge bg-success bg-opacity-10 text-success mb-2">@ObterNomeCategoria(produto.CategoriaId)</span>
                             <h5 class="card-title fw-bold text-dark">@produto.Nome</h5>
-                            <p class="card-text text-muted small mb-3">
-                                <strong>Marca:</strong> @produto.Marca
-                            </p>
-                            <a href="detalhes/@produto.Id" class="btn btn-success w-100 rounded-pill fw-bold">
-                                Ver Detalhes
-                            </a>
+                            <p class="card-text text-muted small mb-3"><strong>Marca:</strong> @produto.Marca</p>
+                            <a href="detalhes/@produto.Id" class="btn btn-success w-100 rounded-pill fw-bold">Ver Detalhes</a>
                         </div>
                     </div>
                 </div>
@@ -115,54 +106,52 @@
     }
 </div>
 
-@* --- ESTILOS CSS --- *@
 <style>
     .banner-img {
         height: 500px;
         object-fit: cover;
     }
 
-    .overlay {
+    .overlay, .overlay-blue {
         position: absolute;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
+    }
+
+    .overlay {
         background: rgba(0, 0, 0, 0.4);
         z-index: 1;
     }
 
-    /* Brilho azul sutil para o slide do Empório */
     .overlay-blue {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        background: radial-gradient(circle at center, rgba(3, 169, 244, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%, transparent 100%);
+        background: radial-gradient(circle at center, rgba(3, 169, 244, 0.1) 0%, transparent 80%);
         z-index: 5;
     }
 
     .carousel-caption {
         z-index: 10;
-        bottom: 25%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 
     .logo-flutuante {
-        max-width: 400px;
+        max-width: 380px;
         height: auto;
-        /* Sombra suave para o logo */
-        filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
     }
 
     .texto-suporte {
         max-width: 600px;
     }
-</style>
 
-@code {
-    @* O seu código do @code bloco entra aqui *@
-}
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
 
 @code {
     private List<Produto> produtos;
@@ -177,21 +166,14 @@
             produtos = await Http.GetFromJsonAsync<List<Produto>>("api/produtos");
             categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/categorias") ?? new();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao carregar dados: {ex.Message}");
-            produtos = new List<Produto>();
-        }
+        catch { produtos = new List<Produto>(); }
     }
 
     private IEnumerable<Produto> ProdutosFiltrados =>
         produtos?.Where(p =>
             (categoriaSelecionadaId == 0 || p.CategoriaId == categoriaSelecionadaId) &&
-            (string.IsNullOrWhiteSpace(filtroTexto) ||
-             p.Nome.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase) ||
-             p.Marca.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase))
-        ) ?? new List<Produto>();
+            (string.IsNullOrWhiteSpace(filtroTexto) || p.Nome.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase)))
+        ?? new List<Produto>();
 
-    private string ObterNomeCategoria(int id)
-        => categorias.FirstOrDefault(c => c.Id == id)?.Nome ?? "Geral";
+    private string ObterNomeCategoria(int id) => categorias.FirstOrDefault(c => c.Id == id)?.Nome ?? "Geral";
 }
