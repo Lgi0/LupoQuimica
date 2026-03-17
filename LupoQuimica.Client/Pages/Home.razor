@@ -2,40 +2,56 @@
 @using LupoQuimica.Shared
 @inject HttpClient Http
 
-@* --- SEÇÃO DO CARROSSEL --- *@
-<div class="container-fluid p-0 mb-5">
-    <SfCarousel AnimationEffect="CarouselAnimationEffect.Fade" AutoPlay="true">
-        <CarouselItem>
-            <div class="item-container">
-                <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg" class="d-block w-100 banner-img" />
-                <div class="caption-overlay">
-                    <h1 class="display-4 fw-bold">Lupo Química</h1>
-                    <p class="lead">Inovação e qualidade em cada solução industrial.</p>
-                </div>
+<div id="factoryCarousel" class="carousel slide carousel-fade shadow-lg mb-5" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#factoryCarousel" data-bs-slide-to="1"></button>
+    </div>
+    <div class="carousel-inner rounded-3">
+        <div class="carousel-item active" data-bs-interval="5000">
+            <div class="overlay"></div>
+            <img src="https://thumbs.dreamstime.com/b/industrial-chemical-processing-manufacturing-facility-laboratory-setup-clean-environment-close-up-view-supply-chain-dynamics-350748109.jpg" class="d-block w-100" alt="Fábrica Lupo Química">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold">Lupo Química</h1>
+                <p class="lead">Soluções inovadoras para a indústria química moderna.</p>
+                <a href="#produtos" class="btn btn-primary btn-lg">Conheça nossos produtos</a>
             </div>
-        </CarouselItem>
-        @* Adicione mais CarouselItem aqui conforme precisar *@
-    </SfCarousel>
+        </div>
+        <div class="carousel-item" data-bs-interval="5000">
+            <div class="overlay"></div>
+            <img src="images/banner2.jpg" class="d-block w-100" alt="Laboratório">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold">Qualidade Rigorosa</h1>
+                <p class="lead">Processos certificados e controle de qualidade de ponta.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-    .banner-img {
+    .carousel-item {
         height: 500px;
-        object-fit: cover;
-        filter: brightness(0.6); /* Deixa a imagem mais escura pro texto brilhar */
-    }
-
-    .item-container {
         position: relative;
     }
 
-    .caption-overlay {
+        .carousel-item img {
+            height: 100%;
+            object-fit: cover;
+        }
+    /* Camada escura para o texto sempre ficar legível */
+    .overlay {
         position: absolute;
-        top: 50%;
-        left: 10%;
-        transform: translateY(-50%);
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+    }
+
+    .carousel-caption {
+        z-index: 2;
+        bottom: 20%;
     }
 </style>
 
